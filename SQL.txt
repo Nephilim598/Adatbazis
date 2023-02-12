@@ -1,0 +1,72 @@
+https://www.w3schools.com/sql/sql_select.asp
+
+AJÁNLOTT sorrend: Select - From - Group by - Having - Order by
+Foreign key: különböző táblák összekapcsolása egyedi azonosító"oszlopok" összekapcsolásával (pl: mind2 táblában szerepel egy egyedi customerID) 
+
+Select - oszlop kiválasztása amit látni akarunk (pl: Select Sum(x) AS "elnevezés")
+From - tábla kiválasztás
+Distinct - ismétlődés elkerülése (az elé kell tenni amire vonatkozik)
+Where - "ahol" "feltétel" (pl: country IS NULL  <--- Null-ra csak így lehet keresni)
+	Between X AND x - x és x között
+	Like 'N%' - keresési minta (N-el kezdődő utána bármi vagy "_N%" 2. betű N)
+	IN ("Berlin","London") - ahol ezek benne vannak
+	Count ('orszag') - megszámol valamit 
+	MIN(oszlop/masnevenMező) - legkisebb
+	MAX(oszlop) - legnagyobb
+	SUM(oszlop) - összesít
+	AVG(oszlop) - átlag
+Order by - eredmények rendezése (pl: Order by Country - alapból abc sorrrendben rendezi (ASC) fordított abc a DESC)
+Insert into tábla (bekérendő, adatok) + alatta Values ( 'bekért', 'adatok', 'értéke', 'bekérési', 'sorrendben',"2001-01-01")- új rekord felvétele (ha nem adunk meg valahova értéket NULL lesz (érték nélküli))
+Update "tábla" + alatta SET "oszlop" = "új adat" + alatta WHERE "ID" = "sor id"- egy adat felülírása vagy megadása (ha nem adjuk meg a WHERE-t akkor minden táblára érvényes lesz)
+Delete From "tábla" + Where "oszlop" = "érték" - az adott sor törlése (ha nem adjuk meg a WHERE-t törlődnek a rekordok)
+DROP database if Exists "Adatbasename" - leellenőrzi hogy van e ilyen adatbázis HA van akkor eldobja (CREATE ELŐTT KÖTELEZŐ!)
+	CREATE DATABASE "adatbazisneve" - adatbázis létrehozása
+		CREATE alá USE "létrehozott adatbázis" - meg kell adnunk hogy melyik adatbázist akarjuk használni
+CREATE TABLE "neve" (oszlopokneveéstípusa(pl: ID INT Primary Key Auto_Increment(A_I - automatikus számozás), rövszöveg Varchar(karakterszám pl:20) Default 'Toyota')) - tábla létrehozása és annak oszlopai stb.
+				(FOREIGN KEY pl: foreign key ("primarykeyoszlop") REFERENCES "összefüzendotábla" ("Primarykeyoszlop") )
+Constraints - kikötések (pl:not null - nem szerepelhet az oszlopban null, unique - azonos érték nem szerepelhet, primary key - a not null és a unique kombinációja, foreign key - Megakadályozza azokat a műveleteket, amelyek tönkretennék a táblák közötti kapcsolatokat, check - le lehet ellenőrizni hogy egy adott feltétel teljesül-e ha nem akkor hibával tér vissza, default - alapértelmezett érték (ha nem adunk valahova értéket akkor a default kerül oda), create index - gyorsítja az adatok kikeresését/visszaolvasását)
+Constraint "cimkeneve" - névvel láthatjuk el a kényszereket/megszorításokat(pl: 2sorral feljebb a foreign key elé írjuk)
+Alter "table" - a oszlop hozzáadása (ALTER TABLE "table" + ADD "oszlop") (oszlop törlése Alter table "oszlop" + DROP COLUMN "oszlop")
+UNION - két/több tábla adatainak az összefésülése, csak 1x fognak előfordulni az adatok (AZ ADATTÍPUSOKNAK AZONOSNAK KELL LENNIE)
+	de ha a duplikációk is kellenek akkor UNION ALL
+GROUP BY - csoportosítja a rekordokat (pl: G.B Country - országonkét számolja meg pl: a customerID-t)
+HAVING - itt használhatunk összesítő függvényeket(WHERE-ben nem) pl: HAVING count(customerID > 5)
+INNER JOIN - több táblából gyűjt olyan adatokat amik mind2 táblában szerepelnek (ez lesz az illesztési mező)(From-ban az egyik tábla az innerben a másik tábla az ON záradékban az illesztési mezőt)
+ON - illesztési mező (Példa: ON tábla.oszlop = másiktábla.oszlop)
+LEFT JOIN - amit balnak jelölünk meg ott mindent megjelenítünk amit a fromban ott meg csak az azonosak jelennek meg (sorrend ugyan az mint az inner joinnál: Select From L_JOIN ON)
+RIGHT JOIN - amit jobbnaknak jelölünk meg ott mindent megjelenítünk amit a fromban ott meg csak az azonosak jelennek meg (sorrend ugyan az mint az inner joinnál: Select From R_JOIN ON)
+CROSS JOIN - párosít mindenkit mindenkivel (pl: Select Class10name, Class20name FROM Class10 CROSS JOIN Class20 )
+SELF Join - (olyan mintha ugyan az a tábla 2x lenne) Ez is párosít de oda kell figyelni hogy pl Sanyi ne saját magával legyen párosítva szóval (WHERE Sanyi_A <> Sanyi_B )
+truncate table "tábla" - összes adat törlése
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
