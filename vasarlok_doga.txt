@@ -1,0 +1,171 @@
+jegyzet:
+NATURAL JOIN - nál nem kell figyelni a kapcsolatokra mert automatikusan megkeresi
+
+
+
+
+
+
+
+
+
+kiírás :
+
+SELECT vasarlok.nev AS vasarlonev, vasarlok.szuletett, megyek.megyeNev, vasarlok.helyseg, eladok.nev AS eladonev , ertekesitesek.datum, ertekesitesek.ertek
+FROM eladok JOIN ertekesitesek USING(eladoID) JOIN vasarlok USING(vasarloID) JOIN megyek USING(megyeID);
+
+
+
+
+CREATE VIEW minden AS
+SELECT vasarlok.nev AS vasarlonev, vasarlok.szuletett, megyek.megyeNev, vasarlok.helyseg, eladok.nev AS eladonev , ertekesitesek.datum, ertekesitesek.ertek
+FROM eladok JOIN ertekesitesek USING(eladoID) JOIN vasarlok USING(vasarloID) JOIN megyek USING(megyeID);
+
+
+
+SELECT eladok.nev, SUM(ertekesitesek.ertek) AS osszeg
+FROM eladok JOIN ertekesitesek USING(eladoID)
+GROUP BY eladok.nev
+ORDER BY osszeg DESC
+
+
+--Melyik vármegyéből mennyi vásárló?
+SELECT megyek.megyeNev, COUNT(*) AS vasarlokszama
+FROM megyek NATURAL JOIN vasarlok
+GROUP BY megyek.megyeID
+
+
+
+-- Melyik megyéből nincs vásárló?
+SELECT megyek.megyeNev
+FROM megyek LEFT JOIN vasarlok USING(megyeID)
+WHERE vasarlok.nev IS null
+
+
+
+
+-- Kik azok az eladók akikhez nem tartozik értékesítés?
+SELECT eladok.nev
+FROM eladok LEFT JOIN ertekesitesek USING(eladoID)
+WHERE ertekesitesek.ertek IS null;
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------
+
+
+
+
+
+1.Listázza ki az eladókat az értékesítéseik összege szerint csökkenő sorrendben.
+SELECT eladok.nev, SUM(ertekesitesek.ertek)
+FROM eladok JOIN ertekesitesek USING(eladoID)
+GROUP BY 1
+ORDER BY ertekesitesek.ertek DESC;
+
+
+
+
+
+2. Melyik évben mennyi volt az értékesítés összege?
+SELECT SUM(ertekesitesek.ertek), YEAR(ertekesitesek.datum)
+FROM ertekesitesek
+GROUP BY 2
+ORDER BY ertekesitesek.datum;
+
+
+
+
+3.Listázza ki a vásárlókat a vásárlásaik értéke szerint csökkenő sorrendben.
+SELECT vasarlok.nev, ertekesitesek.ertek
+FROM ertekesitesek NATURAL JOIN vasarlok
+GROUP BY 2
+ORDER BY ertekesitesek.ertek DESC;
+
+
+
+
+
+
+4.Listázzuk ki az eladókat a legutolsó értékesítésük szerinti sorrendben!
+SELECT DISTINCT ertekesitesek.eladoID, eladok.nev, MAX(ertekesitesek.datum)
+FROM ertekesitesek JOIN eladok USING(eladoID)
+GROUP BY 1;
+
+
+
+
+  
+5.Mely megyékbe nem értékesítettek még egyik évben sem?      
+SELECT *
+FROM megyek
+WHERE megyek.megyeID NOT IN (SELECT DISTINCT megyek.megyeID
+FROM ertekesitesek NATURAL JOIN vasarlok NATURAL JOIN megyek)
+
+
+
+
+
+6.Minden vásárlónál számoljuk össze, hogy hány különböző eladónál vásárolt!
+SELECT DISTINCT ertekesitesek.eladoID, vasarlok.nev
+FROM ertekesitesek JOIN vasarlok USING(vasarloID)
+GROUP BY vasarlok.nev;
+
+
+
+
+
+7.Mely eladók nem értékesítettek még soha "Békés megye"-be.      ÜRES
+SELECT *
+FROM eladok
+WHERE eladok.eladoID NOT IN (SELECT DISTINCT eladok.eladoID
+FROM ertekesitesek JOIN vasarlok USING(vasarloID) JOIN megyek USING(megyeID) JOIN eladok USING(eladoID)
+WHERE megyek.megyeNev = "Békés megye")
+
+
+
+
+
+8.Az Imola nevű eladó milyen összértékben értékesített?
+SELECT eladok.nev, SUM(ertekesitesek.ertek)
+FROM ertekesitesek NATURAL JOIN eladok
+WHERE eladok.nev LIKE "%Imola%"
+GROUP BY 1;
+
+
+
+
+
+9.Az Imola nevű eladó melyik évben NEM értékesített
+SELECT eladok.nev, YEAR(ertekesitesek.datum), ertekesitesek.ertek
+FROM ertekesitesek NATURAL JOIN eladok
+WHERE eladok.nev LIKE "%Imola%"
+HAVING ertekesitesek.ertek IS NULL OR ertekesitesek.ertek = 0
+
+
+
+
+10.Kovács György vásárló hányszor vásárolt?
+SELECT vasarlok.nev, COUNT(ertekesitesek.vasarloID)
+FROM ertekesitesek NATURAL JOIN vasarlok
+WHERE vasarlok.nev = "Kovács György"
+GROUP BY 1
+ORDER BY ertekesitesek.ertek DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
